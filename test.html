@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<head>
+    <title>Test File</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+        }
+        .menu {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            padding: 0;
+        }
+        .line {
+            fill: none;
+            stroke: #979797;
+            stroke-width: 6;
+            transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+                stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .line-hover {
+            stroke: rgb(65, 65, 65);
+        }
+        .line1 {
+            stroke-dasharray: 60 207;
+            stroke-width: 6;
+        }
+        .line2 {
+            stroke-dasharray: 60 60;
+            stroke-width: 6;
+        }
+        .line3 {
+            stroke-dasharray: 60 207;
+            stroke-width: 6;
+        }
+        .opened .line1 {
+            stroke-dasharray: 90 207;
+            stroke-dashoffset: -134;
+            stroke-width: 6;
+        }
+        .opened .line2 {
+            stroke-dasharray: 1 60;
+            stroke-dashoffset: -30;
+            stroke-width: 6;
+        }
+        .opened .line3 {
+            stroke-dasharray: 90 207;
+            stroke-dashoffset: -134;
+            stroke-width: 6;
+        }
+        div.right-menu {
+            left: 0px;
+        }
+
+        div.menu-div {
+            position: fixed;
+            height: 100%;
+            width: 52px;
+            border-right: 1px solid #C0C0C0;
+            border-radius: 0 0.5em 0.5em 0;
+            box-shadow: 2px 0px 2px 0px #C0C0C0;
+            transition-duration: 500ms;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            overflow-x: hidden;
+        }
+        svg.menu-icon {
+            height: 50px;
+            width: 50px;
+        }
+        div.body-div {
+            width: 100%;
+            height: 100%;
+            overflow-y: hidden;
+        }
+        div.menu-div.opened {
+            width: 15vw;
+            overflow-y: auto;
+            align-items: flex-start;
+        }
+        .icon-container {
+            height: auto;
+            display: flex;
+            align-items: center;
+            padding-left: 3px;
+            margin: 0.5em 0;
+        }
+
+        .icon-img {
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .menu-div.closed .icon-text {
+            clip: rect(0, 0, 0, 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            white-space: nowrap;
+            width: 1px;
+        }
+
+        .menu-div .icon-text {
+            display: block;
+            padding: 0.5em;
+        }
+
+    </style>
+</head>
+<body>
+    <script>
+        var icons = [
+            {
+                src : "home.svg", 
+                text : "Home"
+            },
+            {
+                src : "igloo.svg",
+                text : "Igloo"
+            }
+        ];
+
+        $(document).ready(function() {
+            var menu = $('<div class="menu-div right-menu closed"></div>');
+            var button = $('<button class="menu" aria-label="Main Menu"></button>')
+            var svg = $('<svg class="menu-icon" viewBox="0 0 100 100"><path class="line line1" stroke-linecap="round" d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058" /><path class="line line2" stroke-linecap="round" d="M 20,50 H 80" /><path class="line line3" stroke-linecap="round" d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942" /></svg>');
+            $(button).append(svg);
+            $(menu).append(button);
+            $(document.body).append(menu);
+
+            console.log(icons);
+            $(icons).each(function() {
+                console.log("Doing Thing");
+                console.log(this);
+                $('.menu-div').append(createDiv(this.src, this.text));
+            });
+        });
+
+        function createDiv(src, text) {
+            console.log(text);
+            var container = $('<a class="icon-container"></a>');
+            var img = $('<img class="icon-img" />');
+            var textContainer = $('<div class="icon-text"></div>');
+            $(img).attr("src", src);
+            $(textContainer).text(text);
+            $(container).append(img);
+            $(container).append(textContainer);
+            return container;
+        }
+
+        $(document).on("click", 'svg.menu-icon', function() {
+            $(this).toggleClass("opened");
+            $(this).attr("aria-expanded", $(this).hasClass('opened'));
+            $(this).parents('div.menu-div').toggleClass('opened');
+            $(this).parents('div.menu-div').toggleClass("closed");
+        });
+
+        $(document).on("mouseover", 'svg.menu-icon', function() {
+            $(this).find('path').addClass('line-hover');
+        });
+        
+        $(document).on("mouseout", 'svg.menu-icon', function() {
+            $(this).find('path').removeClass('line-hover');
+        });
+    </script>
+</body>
+</html>
